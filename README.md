@@ -66,73 +66,292 @@ ng serve
 
 ---
 
-## 📚 Documentation API
+## 📚 Documentation API Détaillée
 
 **Base URL :** http://localhost:8080
 
-### 🔐 Authentification (`/api/auth`)
+---
 
-- `POST /api/auth/register` : Créer un utilisateur
-- `POST /api/auth/login` : Connexion
-- `GET /api/auth/users` : Liste des utilisateurs
+## 🔐 Authentification (`/api/auth`)
 
-### 🚉 Gares (`/api/gares`)
+### POST /api/auth/register - Créer un utilisateur
+**Headers :**
+```
+Content-Type: application/json
+```
 
-- `GET /api/gares` : Liste des gares
-- `GET /api/gares/{id}` : Gare par ID
-- `GET /api/gares/search?q=` : Recherche
-- `POST /api/gares` : Créer
-- `PUT /api/gares/{id}` : Modifier
-- `DELETE /api/gares/{id}` : Supprimer
+**Body :**
+```json
+{
+  "username": "nomutilisateur",
+  "email": "email@example.com",
+  "password": "motdepasse",
+  "nom": "Nom",
+  "prenom": "Prénom"
+}
+```
 
-### 🚄 Trajets (`/api/trajets`)
+### POST /api/auth/login - Connexion
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :**
+```json
+{
+  "username": "nomutilisateur",
+  "password": "motdepasse"
+}
+```
 
-- `GET /api/trajets` : Liste des trajets
-- `GET /api/trajets/{id}` : Trajet par ID
-- `GET /api/trajets/search` : Recherche filtrée
-- `POST /api/trajets` : Créer
-- `POST /api/trajets/samples` : Créer exemples
-- `PUT /api/trajets/{id}` : Modifier
-- `DELETE /api/trajets/{id}` : Supprimer
+### GET /api/auth/users - Liste des utilisateurs
+*Aucun header ou body spécifique requis*
 
-### 🎫 Réservations (`/api/reservations`)
+---
 
-- `GET /api/reservations` : Liste
-- `GET /api/reservations/user/{userId}` : Réservations par utilisateur
-- `GET /api/reservations/{id}` : Réservation par ID
-- `POST /api/reservations` : Créer
-- `PUT /api/reservations/{id}/status` : Modifier statut
-- `PUT /api/reservations/{id}/cancel` : Annuler
-- `DELETE /api/reservations/{id}` : Supprimer
+## 🚉 Gares (`/api/gares`)
 
-### 👤 Utilisateurs (`/api/users`)
+### GET /api/gares - Liste des gares
+*Aucun header ou body spécifique requis*
 
-- `GET /api/users/{id}` : Détails utilisateur
+### GET /api/gares/{id} - Gare par ID
+*Aucun header ou body spécifique requis*
+
+### GET /api/gares/search?q= - Recherche
+*Aucun header ou body spécifique requis*
+
+### POST /api/gares - Créer une gare
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :**
+```json
+{
+  "nom": "Gare de Lyon",
+  "ville": "Lyon",
+  "codePostal": "69000"
+}
+```
+
+### PUT /api/gares/{id} - Modifier une gare
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :**
+```json
+{
+  "nom": "Gare de Lyon Part-Dieu",
+  "ville": "Lyon",
+  "codePostal": "69003"
+}
+```
+
+### DELETE /api/gares/{id} - Supprimer une gare
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :** *Aucun body requis*
+
+---
+
+## 🚄 Trajets (`/api/trajets`)
+
+### GET /api/trajets - Liste des trajets
+*Aucun header ou body spécifique requis*
+
+### GET /api/trajets/{id} - Trajet par ID
+*Aucun header ou body spécifique requis*
+
+### GET /api/trajets/search - Recherche filtrée
+**Paramètres URL :**
+- `gareDepartId` (optionnel)
+- `gareArriveeId` (optionnel)
+- `dateDepart` (optionnel, format ISO)
+
+### POST /api/trajets - Créer un trajet
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :**
+```json
+{
+  "gareDepart": {
+    "id": 1
+  },
+  "gareArrivee": {
+    "id": 2
+  },
+  "dateDepart": "2024-01-15T10:30:00",
+  "dateArrivee": "2024-01-15T14:30:00",
+  "prix": 45.50,
+  "placesDisponibles": 120
+}
+```
+
+### POST /api/trajets/samples - Créer des trajets d'exemple
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :** *Aucun body requis*
+
+### PUT /api/trajets/{id} - Modifier un trajet
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :**
+```json
+{
+  "gareDepart": {
+    "id": 1
+  },
+  "gareArrivee": {
+    "id": 3
+  },
+  "dateDepart": "2024-01-15T11:00:00",
+  "dateArrivee": "2024-01-15T15:00:00",
+  "prix": 50.00,
+  "placesDisponibles": 100
+}
+```
+
+### DELETE /api/trajets/{id} - Supprimer un trajet
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :** *Aucun body requis*
+
+---
+
+## 🎫 Réservations (`/api/reservations`)
+
+### GET /api/reservations - Liste des réservations
+*Aucun header ou body spécifique requis*
+
+### GET /api/reservations/user/{userId} - Réservations par utilisateur
+*Aucun header ou body spécifique requis*
+
+### GET /api/reservations/{id} - Réservation par ID
+*Aucun header ou body spécifique requis*
+
+### POST /api/reservations - Créer une réservation
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :**
+```json
+{
+  "userId": 1,
+  "trajetId": 1,
+  "nombrePlaces": 2
+}
+```
+
+### PUT /api/reservations/{id}/status - Modifier le statut
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :**
+```json
+{
+  "statut": "ANNULEE"
+}
+```
+**Statuts possibles :** `CONFIRMEE`, `ANNULEE`, `EN_ATTENTE`
+
+### PUT /api/reservations/{id}/cancel - Annuler une réservation
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :** *Aucun body requis*
+
+### DELETE /api/reservations/{id} - Supprimer une réservation
+**Headers :**
+```
+Content-Type: application/json
+```
+**Body :** *Aucun body requis*
+
+---
+
+## 👤 Utilisateurs (`/api/users`)
+
+### GET /api/users/{id} - Détails utilisateur
+*Aucun header ou body spécifique requis*
 
 ---
 
 ## 🧪 Tests avec Postman
 
+### Configuration initiale
 1. Créer une collection **GareConnect API**
 2. Définir une variable d'environnement `baseUrl = http://localhost:8080`
 
-### 3. Scénarios à tester
+### Exemples de requêtes Postman
 
-#### Authentification
-- Créer, se connecter, afficher les utilisateurs
-
-#### Gares
-- Lister, créer, rechercher
-
-#### Trajets
-- Créer, chercher, afficher
-
-#### Réservations
-- Créer, consulter, annuler
-
-### Headers requis
+#### 1. Créer une gare
 ```
-Content-Type: application/json
+POST {{baseUrl}}/api/gares
+Headers: Content-Type: application/json
+Body:
+{
+  "nom": "Gare de Marseille",
+  "ville": "Marseille",
+  "codePostal": "13000"
+}
+```
+
+#### 2. Créer un trajet
+```
+POST {{baseUrl}}/api/trajets
+Headers: Content-Type: application/json
+Body:
+{
+  "gareDepart": {"id": 1},
+  "gareArrivee": {"id": 2},
+  "dateDepart": "2024-02-15T09:00:00",
+  "dateArrivee": "2024-02-15T13:00:00",
+  "prix": 35.00,
+  "placesDisponibles": 150
+}
+```
+
+#### 3. Créer une réservation
+```
+POST {{baseUrl}}/api/reservations
+Headers: Content-Type: application/json
+Body:
+{
+  "userId": 1,
+  "trajetId": 1,
+  "nombrePlaces": 1
+}
+```
+
+#### 4. Modifier le statut d'une réservation
+```
+PUT {{baseUrl}}/api/reservations/1/status
+Headers: Content-Type: application/json
+Body:
+{
+  "statut": "CONFIRMEE"
+}
+```
+
+#### 5. Supprimer une gare
+```
+DELETE {{baseUrl}}/api/gares/1
+Headers: Content-Type: application/json
+Body: (vide)
 ```
 
 ---
@@ -199,6 +418,7 @@ Content-Type: application/json
 - 🔐 L'endpoint `/api/users/{id}` est protégé.
 - 🧪 Postman recommandé pour les tests manuels.
 - 🧩 Utiliser `POST /api/trajets/samples` pour charger des exemples.
+- 📋 **Headers obligatoires :** `Content-Type: application/json` pour tous les POST/PUT/DELETE
 
 ---
 
@@ -215,6 +435,11 @@ Content-Type: application/json
 ### Données absentes
 - Créez des entrées via les endpoints POST.
 - Vérifiez la console H2 pour inspecter les tables.
+
+### Erreur 400 (Bad Request)
+- Vérifiez que le header `Content-Type: application/json` est présent
+- Vérifiez que le format JSON du body est correct
+- Vérifiez que tous les champs requis sont présents
 
 ---
 
