@@ -1,11 +1,19 @@
 package com.gare.controller;
 
+import com.gare.dto.LoginRequest;
 import com.gare.model.User;
 import com.gare.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +21,26 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:4200")
+@Tag(name = "Authentification", description = "API pour la gestion de l'authentification et des utilisateurs")
 public class AuthController {
     
     @Autowired
     private AuthService authService;
     
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody User user) {
+    @Operation(summary = "Enregistrer un nouvel utilisateur", 
+               description = "Créer un nouveau compte utilisateur avec les informations fournies")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", 
+                    description = "Utilisateur enregistré avec succès",
+                    content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", 
+                    description = "Données invalides ou utilisateur déjà existant",
+                    content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> register(
+            @Parameter(description = "Informations de l'utilisateur à enregistrer", required = true)
+            @Valid @RequestBody User user) {
         try {
             User registeredUser = authService.register(user);
             Map<String, Object> response = new HashMap<>();
@@ -34,10 +55,22 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+    @Operation(summary = "Connexion utilisateur", 
+               description = "Authentifier un utilisateur avec son nom d'utilisateur et mot de passe")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", 
+                    description = "Connexion réussie",
+                    content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", 
+                    description = "Identifiants invalides",
+                    content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<?> login(
+            @Parameter(description = "Identifiants de connexion", required = true)
+            @Valid @RequestBody LoginRequest loginRequest) {
         try {
-            String username = loginRequest.get("username");
-            String password = loginRequest.get("password");
+            String username = loginRequest.getUsername();
+            String password = loginRequest.getPassword();
             
             User user = authService.authenticate(username, password);
             
@@ -55,6 +88,16 @@ public class AuthController {
     }
 
     @GetMapping("/users")
+    @Operation(summary = "Récupérer tous les utilisateurs", 
+               description = "Obtenir la liste complète de tous les utilisateurs enregistrés")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", 
+                    description = "Liste des utilisateurs récupérée avec succès",
+                    content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", 
+                    description = "Erreur lors de la récupération",
+                    content = @Content(mediaType = "application/json"))
+    })
     public ResponseEntity<?> getAllUsers() {
         try {
             List<User> users = authService.getAllUsers();

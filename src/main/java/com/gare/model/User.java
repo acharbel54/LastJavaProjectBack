@@ -3,37 +3,63 @@ package com.gare.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
+@Schema(description = "Entité représentant un utilisateur du système")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Identifiant unique de l'utilisateur", 
+            example = "1", 
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @NotBlank
     @Column(unique = true)
+    @Schema(description = "Nom d'utilisateur unique", 
+            example = "charbellll", 
+            required = true)
     private String username;
 
     @NotBlank
     @Email
     @Column(unique = true)
+    @Schema(description = "Adresse email unique et valide", 
+            example = "charbeladonislll@gmail.com", 
+            required = true)
     private String email;
 
     @NotBlank
+    @Schema(description = "Mot de passe de l'utilisateur", 
+            example = "1234567", 
+            required = true)
     private String password;
 
     @Column(name = "first_name")
+    @Schema(description = "Prénom de l'utilisateur", 
+            example = "Charbell", 
+            required = false)
     private String firstName;
 
     @Column(name = "last_name")
+    @Schema(description = "Nom de famille de l'utilisateur", 
+            example = "Adonis", 
+            required = false)
     private String lastName;
 
     @Column(name = "phone_number")
+    @Schema(description = "Numéro de téléphone de l'utilisateur", 
+            example = "+33123456789", 
+            required = false)
     private String phoneNumber;
 
     @Column(name = "created_at")
+    @Schema(description = "Date et heure de création du compte", 
+            example = "2025-01-08T14:30:00.123456", 
+            accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime createdAt;
 
     @PrePersist
